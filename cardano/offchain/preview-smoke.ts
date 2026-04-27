@@ -4,9 +4,6 @@
 //   3. provider claims before deadline
 // Prints all tx hashes — those go straight into REPORT.md.
 //
-// Usage:
-//   tsx preview-smoke.ts
-//
 // Required env (in .env):
 //   BLOCKFROST_PROJECT_ID, PAYER_MNEMONIC, PROVIDER_MNEMONIC
 // Both wallets need:

@@ -3,6 +3,8 @@ import hardhatToolboxMochaEthersPlugin from "@nomicfoundation/hardhat-toolbox-mo
 import "dotenv/config";
 
 const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
+// Deployer key — used only by `hardhat ignition deploy`. Action scripts
+// read their own keys explicitly (PAYER_PRIVATE_KEY, PROVIDER_PRIVATE_KEY).
 const SEPOLIA_PRIVATE_KEY = process.env.SEPOLIA_PRIVATE_KEY;
 
 const networks: Record<string, any> = {

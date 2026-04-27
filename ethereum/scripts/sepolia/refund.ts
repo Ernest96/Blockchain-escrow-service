@@ -1,19 +1,7 @@
-// Refunds a deal at the deployed Escrow on Sepolia (payer signs).
-// Will revert on-chain unless the deadline has passed.
-//
-// Required env: SEPOLIA_RPC_URL, SEPOLIA_PRIVATE_KEY, DEAL_ID
-// Optional env: PROVIDER_PRIVATE_KEY (only because _lib.getContext loads it),
-//               ESCROW_ADDRESS
-//
-// Run: DEAL_ID=0 npx hardhat run scripts/sepolia/refund.ts --network sepolia
+import { getContext, etherscanTx } from "./lib.js";
 
-import { getContext, etherscanTx, isEntryPoint } from "./_lib.js";
-
-/** Refunds a deal. Payer signs. Reverts on-chain unless deadline has passed. */
 export async function refundDeal(opts: { dealId?: bigint } = {}): Promise<string> {
-  const dealId =
-    opts.dealId ??
-    (process.env.DEAL_ID ? BigInt(process.env.DEAL_ID) : undefined);
+  const dealId = opts.dealId ?? (BigInt(String(process.env.DEAL_ID)));
   if (dealId === undefined) {
     throw new Error("DEAL_ID env var (or opts.dealId) is required");
   }
@@ -27,6 +15,4 @@ export async function refundDeal(opts: { dealId?: bigint } = {}): Promise<string
   return tx.hash;
 }
 
-if (isEntryPoint(import.meta.url)) {
-  await refundDeal();
-}
+await refundDeal();

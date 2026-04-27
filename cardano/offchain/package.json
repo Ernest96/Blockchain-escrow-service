@@ -8,7 +8,6 @@
     "claim": "tsx claim.ts",
     "refund": "tsx refund.ts",
     "address": "tsx address.ts",
-    "smoke": "tsx preview-smoke.ts",
     "setup-collateral": "tsx setup-collateral.ts",
     "wallets": "tsx show-wallets.ts"
   },

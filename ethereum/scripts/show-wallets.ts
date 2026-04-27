@@ -22,7 +22,8 @@ function showAddress(label: string, key: string | undefined) {
 }
 
 console.log("Sepolia wallets:");
-showAddress("  payer    ", process.env.SEPOLIA_PRIVATE_KEY);
+showAddress("  deployer ", process.env.SEPOLIA_PRIVATE_KEY);
+showAddress("  payer    ", process.env.PAYER_PRIVATE_KEY);
 showAddress("  provider ", process.env.PROVIDER_PRIVATE_KEY);
 console.log("\nFund both at:");
 console.log("  https://sepoliafaucet.com");

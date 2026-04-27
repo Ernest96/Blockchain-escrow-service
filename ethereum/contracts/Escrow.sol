@@ -31,11 +31,10 @@ contract Escrow {
     error PastDeadline();
     error TransferFailed();
 
-    function lock(address provider, uint64 deadline)
-        external
-        payable
-        returns (uint256 id)
-    {
+    function lock(
+        address provider,
+        uint64 deadline
+    ) external payable returns (uint256 id) {
         if (msg.value == 0) revert ZeroAmount();
         if (deadline <= block.timestamp) revert DeadlineInPast();
 

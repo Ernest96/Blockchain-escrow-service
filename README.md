@@ -74,8 +74,12 @@ Deployment and per-action scripts are deliberately separate. The order is:
 
 1. `cp ethereum/.env.example ethereum/.env` and fill in:
    - `SEPOLIA_RPC_URL` (Infura / Alchemy / public)
-   - `SEPOLIA_PRIVATE_KEY` (payer)
-   - `PROVIDER_PRIVATE_KEY` (a second key for `claim()`)
+   - `SEPOLIA_PRIVATE_KEY` (deployer — used by `deploy:sepolia` only)
+   - `PAYER_PRIVATE_KEY` (signs `lock` and `refund`)
+   - `PROVIDER_PRIVATE_KEY` (signs `claim`)
+
+   The three keys can all be the same wallet if you want the simplest
+   setup; the contract enforces the roles via `msg.sender` checks.
 2. Show the addresses to fund:
    ```bash
    cd ethereum
