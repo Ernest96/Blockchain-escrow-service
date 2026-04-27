@@ -1,0 +1,25 @@
+{
+  "name": "cardano-escrow-offchain",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "lock": "tsx lock.ts",
+    "claim": "tsx claim.ts",
+    "refund": "tsx refund.ts",
+    "address": "tsx address.ts",
+    "smoke": "tsx preview-smoke.ts",
+    "setup-collateral": "tsx setup-collateral.ts",
+    "wallets": "tsx show-wallets.ts"
+  },
+  "dependencies": {
+    "@meshsdk/core": "^1.9.0-beta.71",
+    "@meshsdk/core-csl": "^1.9.0-beta.71",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.5.4"
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "preamble": {
+    "title": "utm/cardano_escrow",
+    "description": "Aiken contracts for project 'utm/cardano_escrow'",
+    "version": "0.0.0",
+    "plutusVersion": "v3",
+    "compiler": {
+      "name": "Aiken",
+      "version": "v1.1.21+42babe5"
+    },
+    "license": "Apache-2.0"
+  },
+  "validators": [
+    {
+      "title": "escrow.escrow.spend",
+      "datum": {
+        "title": "datum_opt",
+        "schema": {
+          "$ref": "#/definitions/escrow~1Datum"
+        }
+      },
+      "redeemer": {
+        "title": "redeemer",
+        "schema": {
+          "$ref": "#/definitions/escrow~1Redeemer"
+        }
+      },
+      "compiledCode": "59022f01010029800aba2aba1aab9faab9eaab9dab9a48888896600264653001300700198039804000cdc3a400530070024888966002600460106ea800e26466453001159800980098059baa0028cc004c038c030dd500148c03cc040c0400064601e60206020602060206020602060200032300f30103010301030103010301030103010001911919800800801912cc00400629422b30013371e6eb8c04800400e29462660040046026002807101148c03cc04000522222259800980398089baa00d8acc004cc008dd6180198091baa00a375c600260246ea801a264646644b3001300f0028992cc004c040c058dd51803180b9baa30063017375400b13371000200513371200200480a8dd6980c180b1baa0038acc004cdc3a400800514a114a280a101418099baa001375a600e60286ea8020c054c04cdd5180118099baa00130043012375401514a080822b3001330023758600660246ea8028dd7180a18091baa0068991919912cc004c03c00a264b3001301030163754600c602e6ea8c064c05cdd5002c4cdc4001000c4cdc4801000a02a375a6030602c6ea800e2b3001300b0028a508a51405080a0c04cdd50009bad300730143754010602a60266ea8c054c04cdd5000980218091baa00a8a5040408081164029300b375400f300e003488966002600800515980098079baa00a801c590104566002601000515980098079baa00a801c5901045900d201a180618068009b8748000c024dd5001c590070c01c004c00cdd5003c52689b2b200201",
+      "hash": "ab95c4e6b8e97b083ce53a4e1959a2a0a6057a6408d88c2c9f39d1c2"
+    },
+    {
+      "title": "escrow.escrow.else",
+      "redeemer": {
+        "schema": {}
+      },
+      "compiledCode": "59022f01010029800aba2aba1aab9faab9eaab9dab9a48888896600264653001300700198039804000cdc3a400530070024888966002600460106ea800e26466453001159800980098059baa0028cc004c038c030dd500148c03cc040c0400064601e60206020602060206020602060200032300f30103010301030103010301030103010001911919800800801912cc00400629422b30013371e6eb8c04800400e29462660040046026002807101148c03cc04000522222259800980398089baa00d8acc004cc008dd6180198091baa00a375c600260246ea801a264646644b3001300f0028992cc004c040c058dd51803180b9baa30063017375400b13371000200513371200200480a8dd6980c180b1baa0038acc004cdc3a400800514a114a280a101418099baa001375a600e60286ea8020c054c04cdd5180118099baa00130043012375401514a080822b3001330023758600660246ea8028dd7180a18091baa0068991919912cc004c03c00a264b3001301030163754600c602e6ea8c064c05cdd5002c4cdc4001000c4cdc4801000a02a375a6030602c6ea800e2b3001300b0028a508a51405080a0c04cdd50009bad300730143754010602a60266ea8c054c04cdd5000980218091baa00a8a5040408081164029300b375400f300e003488966002600800515980098079baa00a801c590104566002601000515980098079baa00a801c5901045900d201a180618068009b8748000c024dd5001c590070c01c004c00cdd5003c52689b2b200201",
+      "hash": "ab95c4e6b8e97b083ce53a4e1959a2a0a6057a6408d88c2c9f39d1c2"
+    }
+  ],
+  "definitions": {
+    "Int": {
+      "dataType": "integer"
+    },
+    "aiken/crypto/VerificationKeyHash": {
+      "title": "VerificationKeyHash",
+      "dataType": "bytes"
+    },
+    "escrow/Datum": {
+      "title": "Datum",
+      "description": "Datum locked at the script address when funds are deposited.\n\n `deadline` is POSIX time in milliseconds — the same unit used by\n Cardano transaction validity ranges in Plutus V3.",
+      "anyOf": [
+        {
+          "title": "Datum",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": [
+            {
+              "title": "payer",
+              "$ref": "#/definitions/aiken~1crypto~1VerificationKeyHash"
+            },
+            {
+              "title": "provider",
+              "$ref": "#/definitions/aiken~1crypto~1VerificationKeyHash"
+            },
+            {
+              "title": "deadline",
+              "$ref": "#/definitions/Int"
+            }
+          ]
+        }
+      ]
+    },
+    "escrow/Redeemer": {
+      "title": "Redeemer",
+      "description": "Two ways to spend a locked UTxO.",
+      "anyOf": [
+        {
+          "title": "Claim",
+          "dataType": "constructor",
+          "index": 0,
+          "fields": []
+        },
+        {
+          "title": "Refund",
+          "dataType": "constructor",
+          "index": 1,
+          "fields": []
+        }
+      ]
+    }
+  }
+}
