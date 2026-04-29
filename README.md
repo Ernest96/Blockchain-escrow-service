@@ -1,4 +1,4 @@
-# contracts-comparison
+# A COMPARATIVE ANALYSIS OF SMART CONTRACT ARCHITECTURES: THE eUTXO MODEL AND THE ACCOUNT-BASED MODEL
 
 Companion code for *A Comparative Analysis of Smart Contract Architectures: The eUTXO Model and the Account-Based Model* (UTM 2026).
 
