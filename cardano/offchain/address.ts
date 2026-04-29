@@ -3,9 +3,9 @@
 //
 //   tsx address.ts
 
-import { getScriptAddress, loadValidator } from "./common.js";
+import { getScriptAddress, loadValidator, NETWORK } from "./common.js";
 
 const v = loadValidator();
 console.log("Validator:        ", v.title);
 console.log("Script hash:      ", v.hash);
-console.log("Script address:   ", getScriptAddress(), "(network 0 = Preview)");
+console.log("Script address:   ", getScriptAddress(), `(network = ${NETWORK})`);

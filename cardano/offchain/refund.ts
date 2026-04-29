@@ -1,22 +1,17 @@
-// Spends a locked UTxO with the Refund redeemer (payer reclaims the funds).
-// The transaction must be valid strictly after the datum's deadline,
-// and signed by the payer key.
-//
-// Usage:
-//   tsx refund.ts <lockTxHash> [outputIndex]
-
+import { MeshTxBuilder, deserializeDatum, mConStr1 } from "@meshsdk/core";
 import {
-  MeshTxBuilder,
-  deserializeDatum,
-  unixTimeToEnclosingSlot,
-  SLOT_CONFIG_NETWORK,
-  mConStr1,
-} from "@meshsdk/core";
-import { getWallet, getScriptAddress, getScriptCbor, getPaymentKeyHash } from "./common.js";
+  getWallet,
+  getScriptAddress,
+  getPaymentKeyHash,
+  loadScriptRef,
+  slotAfterDeadline,
+  cardanoscanTxUrl,
+  type EscrowDatum,
+} from "./common.js";
 
-const [lockTxHash, outputIndexArg] = process.argv.slice(2);
+const lockTxHash = process.argv[2] ?? process.env.LOCK_TX_HASH;
 if (!lockTxHash) {
-  console.error("Usage: tsx refund.ts <lockTxHash> [outputIndex]");
+  console.error("LOCK_TX_HASH not set in .env. ");
   process.exit(1);
 }
 
@@ -24,12 +19,10 @@ const { provider, wallet } = await getWallet("payer");
 const payerAddress = await wallet.getChangeAddress();
 const payerPkh = await getPaymentKeyHash(wallet);
 const scriptAddress = getScriptAddress();
-const scriptCbor = getScriptCbor();
+const scriptRef = loadScriptRef();
 
 const txUtxos = await provider.fetchUTxOs(lockTxHash);
-const candidate = outputIndexArg
-  ? txUtxos.find((u) => u.input.outputIndex === Number(outputIndexArg))
-  : txUtxos.find((u) => u.output.address === scriptAddress);
+const candidate = txUtxos.find((u) => u.output.address === scriptAddress);
 if (!candidate) {
   throw new Error(
     `No script UTxO found at ${scriptAddress} in tx ${lockTxHash}.`,
@@ -39,9 +32,6 @@ if (!candidate) {
 const datumPlutus = candidate.output.plutusData;
 if (!datumPlutus) throw new Error("Script UTxO has no inline datum.");
 
-interface EscrowDatum {
-  fields: [{ bytes: string }, { bytes: string }, { int: number }];
-}
 const datum = deserializeDatum<EscrowDatum>(datumPlutus);
 const datumPayer = datum.fields[0].bytes;
 const deadlineMs = Number(datum.fields[2].int);
@@ -54,26 +44,13 @@ if (datumPayer !== payerPkh) {
 
 const nowMs = Date.now();
 if (nowMs < deadlineMs) {
-  throw new Error(
-    `Deadline has not passed yet: now=${new Date(nowMs).toISOString()} ` +
-      `deadline=${new Date(deadlineMs).toISOString()}.`,
-  );
+  throw new Error(`Deadline has not passed yet: now=${new Date(nowMs).toISOString()}`);
 }
-
-// Validity-range lower bound must be strictly after deadline so the script's
-// is_entirely_after(deadline) check passes. Add 1s of safety margin.
-const lowerUnixSec = Math.floor((deadlineMs + 1000) / 1000);
-const invalidBefore = unixTimeToEnclosingSlot(
-  lowerUnixSec,
-  SLOT_CONFIG_NETWORK.preview,
-);
 
 const utxos = await wallet.getUtxos();
 const collateral = await wallet.getCollateral();
 if (collateral.length === 0) {
-  throw new Error(
-    "Payer wallet has no collateral. Run wallet.createCollateral() first.",
-  );
+  throw new Error("Payer wallet has no collateral.");
 }
 
 const txBuilder = new MeshTxBuilder({
@@ -90,16 +67,17 @@ const unsignedTx = await txBuilder
     candidate.output.amount,
     candidate.output.address,
   )
-  .txInScript(scriptCbor)
-  .txInInlineDatumPresent()
-  .txInRedeemerValue(mConStr1([])) // Refund = constructor index 1
+  // Reference the published script UTxO instead of attaching the bytes here.
+  .spendingTxInReference(scriptRef.txHash, scriptRef.outputIndex)
+  .spendingReferenceTxInInlineDatumPresent()
+  .spendingReferenceTxInRedeemerValue(mConStr1([])) // Refund = constructor 1
   .txInCollateral(
     collateral[0].input.txHash,
     collateral[0].input.outputIndex,
     collateral[0].output.amount,
     collateral[0].output.address,
   )
-  .invalidBefore(invalidBefore)
+  .invalidBefore(slotAfterDeadline(deadlineMs))
   .requiredSignerHash(payerPkh)
   .changeAddress(payerAddress)
   .selectUtxosFrom(utxos)
@@ -110,4 +88,4 @@ const txHash = await wallet.submitTx(signedTx);
 
 console.log("REFUND TX SUBMITTED");
 console.log("Tx hash:         ", txHash);
-console.log("Cardanoscan:     ", `https://preview.cardanoscan.io/transaction/${txHash}`);
+console.log("Cardanoscan:     ", cardanoscanTxUrl(txHash));

@@ -4,12 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "address": "tsx address.ts",
+    "wallets": "tsx show-wallets.ts",
+    "brew-wallets": "tsx brew-wallets.ts",
+    "setup-collateral": "tsx setup-collateral.ts",
+    "publish-script": "tsx publish-script.ts",
     "lock": "tsx lock.ts",
     "claim": "tsx claim.ts",
     "refund": "tsx refund.ts",
-    "address": "tsx address.ts",
-    "setup-collateral": "tsx setup-collateral.ts",
-    "wallets": "tsx show-wallets.ts"
+    "print-datum-schema": "tsx ../scripts/print-datum-schema.ts"
   },
   "dependencies": {
     "@meshsdk/core": "^1.9.0-beta.71",

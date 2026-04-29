@@ -1,12 +1,6 @@
-// Prints the Preview addresses of the configured payer and provider mnemonics
-// — so you know where to send faucet tADA.
-//
-// Usage:
-//   tsx show-wallets.ts
+import { getWallet, NETWORK } from "./common.js";
 
-import { getWallet } from "./common.js";
-
-async function show(role: "payer" | "provider") {
+async function show(role: "admin" | "payer" | "provider") {
   try {
     const { wallet } = await getWallet(role);
     const address = await wallet.getChangeAddress();
@@ -20,8 +14,9 @@ async function show(role: "payer" | "provider") {
   }
 }
 
-console.log("Preview wallets:");
+console.log(`${NETWORK} wallets:`);
+await show("admin");
 await show("payer");
 await show("provider");
-console.log("\nFund both at:");
-console.log("  https://docs.cardano.org/cardano-testnets/tools/faucet (choose Preview)");
+console.log("\nFund all three at:");
+console.log(`  https://docs.cardano.org/cardano-testnets/tools/faucet (choose ${NETWORK[0].toUpperCase() + NETWORK.slice(1)})`);

@@ -8,6 +8,9 @@
 // validators/escrow.ak.
 
 import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 type FieldRef = { title?: string; $ref: string };
 type Constructor = {
@@ -18,7 +21,7 @@ type Constructor = {
 };
 type SumType = { title?: string; description?: string; anyOf: Constructor[] };
 
-const blueprint = JSON.parse(fs.readFileSync("plutus.json", "utf8"));
+const blueprint = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "plutus.json"), "utf8"));
 const defs: Record<string, any> = blueprint.definitions ?? {};
 
 function resolveLabel(ref: string): string {

@@ -8,9 +8,9 @@
     "test": "hardhat test",
     "node": "hardhat node",
     "deploy:sepolia": "hardhat ignition deploy ignition/modules/Escrow.ts --network sepolia",
-    "lock:sepolia": "hardhat run scripts/sepolia/lock.ts --network sepolia",
-    "claim:sepolia": "hardhat run scripts/sepolia/claim.ts --network sepolia",
-    "refund:sepolia": "hardhat run scripts/sepolia/refund.ts --network sepolia",
+    "lock": "hardhat run scripts/sepolia/lock.ts --network sepolia",
+    "claim": "hardhat run scripts/sepolia/claim.ts --network sepolia",
+    "refund": "hardhat run scripts/sepolia/refund.ts --network sepolia",
     "wallets": "hardhat run scripts/show-wallets.ts",
     "storage-layout": "hardhat run scripts/print-storage-layout.ts"
   },

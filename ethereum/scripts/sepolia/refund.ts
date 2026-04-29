@@ -1,10 +1,9 @@
 import { getContext, etherscanTx } from "./lib.js";
 
 export async function refundDeal(opts: { dealId?: bigint } = {}): Promise<string> {
-  const dealId = opts.dealId ?? (BigInt(String(process.env.DEAL_ID)));
-  if (dealId === undefined) {
-    throw new Error("DEAL_ID env var (or opts.dealId) is required");
-  }
+  const raw = process.env.DEAL_ID;
+  if (!opts.dealId && !raw) throw new Error("no <deal-id> provided");
+  const dealId = opts.dealId ?? BigInt(raw!);
 
   const { payer, escrow } = await getContext();
   const tx = await escrow.connect(payer).refund(dealId);

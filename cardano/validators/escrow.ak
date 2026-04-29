@@ -3,17 +3,12 @@ use aiken/crypto.{VerificationKeyHash}
 use aiken/interval
 use cardano/transaction.{OutputReference, Transaction}
 
-/// Datum locked at the script address when funds are deposited.
-///
-/// `deadline` is POSIX time in milliseconds — the same unit used by
-/// Cardano transaction validity ranges in Plutus V3.
 pub type Datum {
   payer: VerificationKeyHash,
   provider: VerificationKeyHash,
   deadline: Int,
 }
 
-/// Two ways to spend a locked UTxO.
 pub type Redeemer {
   Claim
   Refund

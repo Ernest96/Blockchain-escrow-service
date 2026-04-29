@@ -1,57 +1,37 @@
-// Locks ADA at the escrow script address with an inline datum.
-//
-// Usage:
-//   tsx lock.ts <amountAda> <deadlineMinutesFromNow> <providerAddressOrPkh>
-// Example:
-//   tsx lock.ts 5 30 addr_test1...
-//
-// The payer's verification-key-hash is taken from the wallet derived from
-// PAYER_MNEMONIC. The provider can be passed as either a bech32 address or
-// a raw 28-byte hex pub-key hash.
+// Run: npm run lock
+import { MeshTxBuilder, mConStr0 } from "@meshsdk/core";
+import { getWallet, getScriptAddress, getPaymentKeyHash, cardanoscanTxUrl } from "./common.js";
 
-import { mConStr0 } from "@meshsdk/core";
-import { MeshTxBuilder, resolvePaymentKeyHash } from "@meshsdk/core";
-import { getWallet, getScriptAddress, getPaymentKeyHash } from "./common.js";
+const amountAda = Number(process.env.LOCK_AMOUNT_ADA ?? "5");
+const deadlineMin = Number(process.env.LOCK_DEADLINE_MIN ?? "30");
 
-function isHex(s: string): boolean {
-  return /^[0-9a-fA-F]+$/.test(s);
-}
+// embed providerPkh in datum
+const { wallet: providerWallet } = await getWallet("provider");
+const providerPkh = await getPaymentKeyHash(providerWallet);
 
-function toPkh(input: string): string {
-  if (isHex(input) && input.length === 56) return input.toLowerCase();
-  return resolvePaymentKeyHash(input);
-}
+const amountLovelace = BigInt(Math.round(amountAda * 1_000_000)).toString();
+const deadlineMs = Date.now() + deadlineMin * 60_000;
 
-const [amountAdaArg, deadlineMinArg, providerArg] = process.argv.slice(2);
-if (!amountAdaArg || !deadlineMinArg || !providerArg) {
-  console.error(
-    "Usage: tsx lock.ts <amountAda> <deadlineMinutesFromNow> <providerAddressOrPkh>",
-  );
-  process.exit(1);
-}
-
-const amountLovelace = (BigInt(Math.round(Number(amountAdaArg) * 1_000_000))).toString();
-const deadlineMs = Date.now() + Number(deadlineMinArg) * 60_000;
-const providerPkh = toPkh(providerArg);
-
-const { provider, wallet } = await getWallet("payer");
-const payerAddress = await wallet.getChangeAddress();
-const payerPkh = await getPaymentKeyHash(wallet);
+// Destructure with rename so the names are explicit:
+const { provider: blockfrost, wallet: payerWallet } = await getWallet("payer");
+const payerAddress = await payerWallet.getChangeAddress();
+const payerPkh = await getPaymentKeyHash(payerWallet);
 const scriptAddress = getScriptAddress();
-const utxos = await wallet.getUtxos();
+const utxos = await payerWallet.getUtxos();
 
-console.log("Payer address:   ", payerAddress);
-console.log("Payer PKH:       ", payerPkh);
-console.log("Provider PKH:    ", providerPkh);
-console.log("Script address:  ", scriptAddress);
-console.log("Amount (lovelace):", amountLovelace);
-console.log("Deadline (ms):   ", deadlineMs, `(${new Date(deadlineMs).toISOString()})`);
+console.log("Payer address: ", payerAddress);
+console.log("Payer PKH: ", payerPkh);
+console.log("Provider PKH: ", providerPkh);
+console.log("Script address: ", scriptAddress);
+console.log("Amount: ", `${amountAda} tADA (${amountLovelace} lovelace)`);
+console.log(`Deadline: ${deadlineMin} min from now (${new Date(deadlineMs).toISOString()})`);
 
 const datum = mConStr0([payerPkh, providerPkh, deadlineMs]);
 
 const txBuilder = new MeshTxBuilder({
-  fetcher: provider,
-  submitter: provider,
+  fetcher: blockfrost,
+  submitter: blockfrost,
+  evaluator: blockfrost
 });
 
 const unsignedTx = await txBuilder
@@ -59,11 +39,13 @@ const unsignedTx = await txBuilder
   .txOutInlineDatumValue(datum)
   .changeAddress(payerAddress)
   .selectUtxosFrom(utxos)
+  .setFee("200000")
   .complete();
 
-const signedTx = await wallet.signTx(unsignedTx);
-const txHash = await wallet.submitTx(signedTx);
+// payer signs and submits — they're the msg.sender of this lock.
+const signedTx = await payerWallet.signTx(unsignedTx);
+const txHash = await payerWallet.submitTx(signedTx);
 
-console.log("\nLOCK TX SUBMITTED");
-console.log("Tx hash:         ", txHash);
-console.log("Cardanoscan:     ", `https://preview.cardanoscan.io/transaction/${txHash}`);
+console.log("LOCK TX SUBMITTED");
+console.log("Tx hash: ", txHash);
+console.log(`Cardanoscan: ${cardanoscanTxUrl(txHash)}`);

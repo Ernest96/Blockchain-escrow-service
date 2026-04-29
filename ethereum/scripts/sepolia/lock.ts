@@ -1,4 +1,4 @@
-import { getContext, etherscanTx } from "./lib.js";
+import { getContext, etherscanTx} from "./lib.js";
 
 export async function lockDeal(opts: {
   amountEth?: string;

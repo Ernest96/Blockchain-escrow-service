@@ -47,7 +47,6 @@
     },
     "escrow/Datum": {
       "title": "Datum",
-      "description": "Datum locked at the script address when funds are deposited.\n\n `deadline` is POSIX time in milliseconds — the same unit used by\n Cardano transaction validity ranges in Plutus V3.",
       "anyOf": [
         {
           "title": "Datum",
@@ -72,7 +71,6 @@
     },
     "escrow/Redeemer": {
       "title": "Redeemer",
-      "description": "Two ways to spend a locked UTxO.",
       "anyOf": [
         {
           "title": "Claim",
