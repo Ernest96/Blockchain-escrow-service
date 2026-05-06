@@ -15,7 +15,6 @@ Two parallel implementations of the same time-locked service-payment escrow:
 contracts-comparison/
 ├── ethereum/                       # Hardhat 3 project
 │   ├── contracts/Escrow.sol
-│   ├── test/Escrow.test.ts
 │   ├── ignition/modules/Escrow.ts  # deploy module (Ignition)
 │   └── scripts/
 │       ├── print-storage-layout.ts
@@ -80,11 +79,6 @@ DEAL_ID=3 npm run claim
 DEAL_ID=3 npm run refund
 ```
 
-## Test
-
-```bash
-npm test
-```
 
 ---
 

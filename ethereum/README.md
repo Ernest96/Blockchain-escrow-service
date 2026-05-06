@@ -37,8 +37,3 @@ DEAL_ID=3 npm run claim
 DEAL_ID=3 npm run refund
 ```
 
-## Test
-
-```bash
-npm test
-```

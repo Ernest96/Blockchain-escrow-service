@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "compile": "hardhat compile",
-    "test": "hardhat test",
     "node": "hardhat node",
     "deploy:sepolia": "hardhat ignition deploy ignition/modules/Escrow.ts --network sepolia",
     "lock": "hardhat run scripts/sepolia/lock.ts --network sepolia",
