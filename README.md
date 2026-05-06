@@ -2,8 +2,6 @@
 
 Companion code for *A Comparative Analysis of Smart Contract Architectures: The eUTXO Model and the Account-Based Model* (UTM 2026).
 
-**Repository:** https://github.com/Ernest96/Blockchain-escrow-service
-
 Two parallel implementations of the same time-locked service-payment escrow:
 
 | Side       | Toolchain                                    | Testnet  |
@@ -58,7 +56,7 @@ cp .env.example .env   # fill in the values
 
 | Key                   | Description                                   |
 |-----------------------|-----------------------------------------------|
-| `SEPOLIA_RPC_URL`     | Alchemy / Infura Sepolia endpoint             |
+| `SEPOLIA_RPC_URL`     | Infura Sepolia endpoint             |
 | `PAYER_PRIVATE_KEY`   | Private key of the payer wallet               |
 | `PROVIDER_PRIVATE_KEY`| Private key of the provider wallet            |
 | `ESCROW_ADDRESS`      | Override deployed contract address            |

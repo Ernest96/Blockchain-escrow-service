@@ -104,7 +104,7 @@ decodeFunctionResult(functionFragment: 'refund', data: BytesLike): Result;
     
     deals: TypedContractMethod<
       [arg0: BigNumberish, ],
-      [[string, string, bigint, bigint] & {payer: string, provider: string, amount: bigint, deadline: bigint }],
+      [[string, bigint, string, bigint] & {payer: string, deadline: bigint, provider: string, amount: bigint }],
       'view'
     >
     
@@ -143,7 +143,7 @@ decodeFunctionResult(functionFragment: 'refund', data: BytesLike): Result;
     >;
 getFunction(nameOrSignature: 'deals'): TypedContractMethod<
       [arg0: BigNumberish, ],
-      [[string, string, bigint, bigint] & {payer: string, provider: string, amount: bigint, deadline: bigint }],
+      [[string, bigint, string, bigint] & {payer: string, deadline: bigint, provider: string, amount: bigint }],
       'view'
     >;
 getFunction(nameOrSignature: 'lock'): TypedContractMethod<

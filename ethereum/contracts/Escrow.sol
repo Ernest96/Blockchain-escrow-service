@@ -4,9 +4,9 @@ pragma solidity ^0.8.28;
 contract Escrow {
     struct Deal {
         address payer;
+        uint64 deadline;
         address provider;
         uint256 amount;
-        uint64 deadline;
     }
 
     uint256 public nextId;
@@ -39,7 +39,7 @@ contract Escrow {
         if (deadline <= block.timestamp) revert DeadlineInPast();
 
         id = nextId++;
-        deals[id] = Deal(msg.sender, provider, msg.value, deadline);
+        deals[id] = Deal(msg.sender, deadline, provider, msg.value);
         emit Locked(id, msg.sender, provider, msg.value, deadline);
     }
 
