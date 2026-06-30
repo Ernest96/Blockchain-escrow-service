@@ -6,6 +6,7 @@ import {
   loadScriptRef,
   slotAfterDeadline,
   cardanoscanTxUrl,
+  getCostModels,
   type EscrowDatum,
 } from "./common.js";
 
@@ -53,6 +54,10 @@ if (collateral.length === 0) {
   throw new Error("Payer wallet has no collateral.");
 }
 
+// Live on-chain cost models — without these Mesh hashes script_data with a
+// stale PlutusV3 model and the node rejects the tx (ScriptIntegrityHashMismatch).
+const costModels = await getCostModels();
+
 const txBuilder = new MeshTxBuilder({
   fetcher: provider,
   submitter: provider,
@@ -81,6 +86,7 @@ const unsignedTx = await txBuilder
   .requiredSignerHash(payerPkh)
   .changeAddress(payerAddress)
   .selectUtxosFrom(utxos)
+  .setCostModels(costModels)
   .complete();
 
 const signedTx = await wallet.signTx(unsignedTx);

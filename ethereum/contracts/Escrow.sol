@@ -12,25 +12,6 @@ contract Escrow {
     uint256 public nextId;
     mapping(uint256 => Deal) public deals;
 
-    event Locked(
-        uint256 indexed id,
-        address indexed payer,
-        address indexed provider,
-        uint256 amount,
-        uint64 deadline
-    );
-    event Claimed(uint256 indexed id, address indexed provider, uint256 amount);
-    event Refunded(uint256 indexed id, address indexed payer, uint256 amount);
-
-    error ZeroAmount();
-    error DeadlineInPast();
-    error UnknownDeal();
-    error NotProvider();
-    error NotPayer();
-    error TooEarly();
-    error PastDeadline();
-    error TransferFailed();
-
     function lock(
         address provider,
         uint64 deadline
@@ -42,6 +23,26 @@ contract Escrow {
         deals[id] = Deal(msg.sender, deadline, provider, msg.value);
         emit Locked(id, msg.sender, provider, msg.value, deadline);
     }
+
+    event Locked(
+        uint256 indexed id,
+        address indexed payer,
+        address indexed provider,
+        uint256 amount,
+        uint64 deadline
+    );
+
+    event Claimed(uint256 indexed id, address indexed provider, uint256 amount);
+    event Refunded(uint256 indexed id, address indexed payer, uint256 amount);
+
+    error ZeroAmount();
+    error DeadlineInPast();
+    error UnknownDeal();
+    error NotProvider();
+    error NotPayer();
+    error TooEarly();
+    error PastDeadline();
+    error TransferFailed();
 
     function claim(uint256 id) external {
         Deal memory d = deals[id];

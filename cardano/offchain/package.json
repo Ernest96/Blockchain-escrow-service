@@ -15,8 +15,8 @@
     "print-datum-schema": "tsx ../scripts/print-datum-schema.ts"
   },
   "dependencies": {
-    "@meshsdk/core": "^1.9.0-beta.71",
-    "@meshsdk/core-csl": "^1.9.0-beta.71",
+    "@meshsdk/core": "^1.9.1",
+    "@meshsdk/core-csl": "^1.9.1",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {

@@ -1,8 +1,8 @@
 {
-    "txHash": "7be98578c2e5be97c1b7ee2a8654f4f0767bd528190bad9e467312a7166e6f49",
+    "txHash": "18a973bcb60cf1f757183f1eef6af624f44fc00f8ec88bdc192aa2e13274398a",
     "outputIndex": 0,
     "scriptHash": "ab95c4e6b8e97b083ce53a4e1959a2a0a6057a6408d88c2c9f39d1c2",
     "validatorTitle": "escrow.escrow.spend",
     "network": "preprod",
-    "publishedAt": "2026-04-28T22:12:49.129Z"
+    "publishedAt": "2026-05-06T09:44:24.009Z"
 }

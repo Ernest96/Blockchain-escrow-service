@@ -9,6 +9,20 @@ Two parallel implementations of the same time-locked service-payment escrow:
 | Ethereum   | Solidity 0.8.28 + Hardhat 3                  | Sepolia  |
 | Cardano    | Aiken (Plutus V3) + Mesh.js                  | Preprod  |
 
+## Measured transactions
+
+The per-action cost figures reported in Table 4 of the paper correspond to the following on-chain transactions. Each can be independently inspected on the respective block explorer.
+
+| Action         | Network            | Transaction hash | Explorer |
+|----------------|--------------------|------------------|----------|
+| Create (lock)  | Sepolia (Ethereum) | `0x48b5776b7082729d3d595958bf3196eaaff4b897e01b05b1ec11ff2e801c56fb` | [Etherscan](https://sepolia.etherscan.io/tx/0x48b5776b7082729d3d595958bf3196eaaff4b897e01b05b1ec11ff2e801c56fb) |
+| Claim          | Sepolia (Ethereum) | `0x28332e33ac97fd5bd9f94c470577ec602abcd0ba8f2570f4743f3849c0108cd4` | [Etherscan](https://sepolia.etherscan.io/tx/0x28332e33ac97fd5bd9f94c470577ec602abcd0ba8f2570f4743f3849c0108cd4) |
+| Refund         | Sepolia (Ethereum) | `0x9575bbdefc4dd4b84f01559b12cf9a02b2fe0b47ec9b7fb648b2f79111562685` | [Etherscan](https://sepolia.etherscan.io/tx/0x9575bbdefc4dd4b84f01559b12cf9a02b2fe0b47ec9b7fb648b2f79111562685) |
+| Create (lock)  | Preprod (Cardano)  | `2985af0e2865c8742cf1889b49d2a41e6995246acca0bff919514476330fb9a1` | [Cardanoscan](https://preprod.cardanoscan.io/transaction/2985af0e2865c8742cf1889b49d2a41e6995246acca0bff919514476330fb9a1) |
+| Claim          | Preprod (Cardano)  | `3befc488bb49bebbdec0c543779abe7dee6b152598bbb2fc3055d3301499e6f8` | [Cardanoscan](https://preprod.cardanoscan.io/transaction/3befc488bb49bebbdec0c543779abe7dee6b152598bbb2fc3055d3301499e6f8) |
+| Refund         | Preprod (Cardano)  | `4094f747d30a134429ae0f2831ed95e1926fe6ea957739f47cf0470d398335b9` | [Cardanoscan](https://preprod.cardanoscan.io/transaction/4094f747d30a134429ae0f2831ed95e1926fe6ea957739f47cf0470d398335b9) |
+
+
 ## Repository layout
 
 ```

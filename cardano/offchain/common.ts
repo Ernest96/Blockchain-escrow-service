@@ -146,6 +146,41 @@ export function loadScriptRef(): ScriptRef {
   return JSON.parse(fs.readFileSync(refPath, "utf8"));
 }
 
+const KOIOS_BASE_BY_NETWORK: Record<string, string> = {
+  preview: "https://preview.koios.rest/api/v1",
+  preprod: "https://preprod.koios.rest/api/v1",
+  mainnet: "https://api.koios.rest/api/v1",
+};
+
+/**
+ * Current on-chain Plutus cost models, ordered as `[V1, V2, V3]`.
+ *
+ * Why this exists: Mesh's transaction serializer otherwise computes the
+ * `script_data_hash` from a hardcoded, outdated PlutusV3 cost model (297
+ * params) that no longer matches preprod's live model (350 params). The
+ * ledger recomputes the hash with the real model, the two disagree, and any
+ * script-spending tx (claim/refund) is rejected with `ScriptIntegrityHashMismatch`.
+ * (Lock executes no script, so it carries no script_data_hash and is immune.)
+ *
+ * Blockfrost's Mesh provider drops `cost_models` from `fetchProtocolParameters`,
+ * so we fetch the live, canonically-ordered arrays from Koios and feed them to
+ * `txBuilder.setCostModels(...)`.
+ */
+export async function getCostModels(): Promise<[number[], number[], number[]]> {
+  const base = KOIOS_BASE_BY_NETWORK[NETWORK];
+  if (!base) throw new Error(`No Koios endpoint configured for network "${NETWORK}".`);
+  const res = await fetch(`${base}/epoch_params`);
+  if (!res.ok) {
+    throw new Error(`Koios epoch_params request failed: ${res.status} ${res.statusText}`);
+  }
+  const data = (await res.json()) as Array<{ cost_models?: Record<string, number[]> }>;
+  const cm = data?.[0]?.cost_models;
+  if (!cm?.PlutusV1 || !cm?.PlutusV2 || !cm?.PlutusV3) {
+    throw new Error("Koios epoch_params response did not include cost_models.");
+  }
+  return [cm.PlutusV1, cm.PlutusV2, cm.PlutusV3];
+}
+
 /**
  * Slot just before `deadlineMs` — used as `.invalidHereafter(...)` for
  * Claim, so the validator's `is_entirely_before(validity_range, deadline)`
